@@ -1,7 +1,7 @@
 name: dto_helpers
 description: "Dart package to validate DTO's(Data transfer objects)."
 version: 0.0.1
-homepage:
+homepage: https://github.com/rajputs37/dto_helpers
 
 environment:
   sdk: ">=3.2.6 <4.0.0"
