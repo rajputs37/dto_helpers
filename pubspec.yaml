@@ -12,6 +12,14 @@ dependencies:
     sdk: flutter
   validators: ^3.0.0
 
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
