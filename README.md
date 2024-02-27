@@ -1,24 +1,12 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
 # dto_helpers
 
 DTO(Data transfer objects) validators package for [Dart](https://dart.dev/).
 Supports all platforms.
+The <b>dto_helpers</b> package provides a robust set of validators for Data Transfer Objects (DTOs) in Dart applications, ensuring data integrity for various data types including strings, numbers, enums, booleans, and lists.
 
-## Getting Started
+## Getting Started 🚀
 
-In your flutter project add the dependency:
+Enhance your Flutter or Dart project by adding dto_helpers to your dependency list:
 
 ```yml
 dependencies:
@@ -26,17 +14,17 @@ dependencies:
   dto_helpers:
 ```
 
-## Features
+## Features ✨
 
-- String validator
-- List validator
-- Number validator
-- Enum validator
-- Boolean validator
+- <b>String Validator</b>: Ensure that your data meets specific string-based criteria.
+- <b>List Validator</b>: Validate list sizes and nested list elements.
+- <b>Number Validator</b>: Confirm numerical data integrity, ranges, and sign.
+- <b>Enum Validator</b>: Check that data matches one of the predefined enum values.
+- <b>Boolean Validator</b>: Verify boolean values accurately.
 
 ## Usage
 
-Declare a DTO class extending `DTOValidate`
+To leverage dto_helpers, declare a DTO class extending `DTOValidate`. Here's an example of a SignInDTO:
 
 ```dart
 import 'package:dto_helpers/dto_helpers.dart';
@@ -44,44 +32,59 @@ import 'package:dto_helpers/dto_helpers.dart';
 class SignInDTO extends DTOValidate {
   late String name;
   int? signInCode;
-  SignInDTO({required this.name});
 
+  SignInDTO({required this.name, this.signInCode});
+
+  // Factory constructor for JSON deserialization
   factory SignInDTO.fromJson(dynamic json) {
-    return SignInDTO(name: json['name'],signInCode: json['signInCode']);
+    return SignInDTO(name: json['name'], signInCode: json['signInCode']);
   }
 
-  QrCodeDTO.empty();
+  // Call this for an empty DTO
+  SignInDTO.empty();
 
   @override
   ValidationResult validate(dynamic json) {
-    // you can chain different validators in the below method
     return super.validateAll([
       IsString(
-          value: json['name'],
-          // validation result will have proper message only if properyName is provided
-          propertyName: 'name'),
-       IsNumber(
+        value: json['name'],
+        propertyName: 'name' // Provides meaningful error messages
+      ),
+      IsNumber(
         value: json['signInCode'],
-        isOptional: true
-       )
+        isOptional: true, // Signifies optional fields
+        propertyName: 'signInCode'
+      )
     ]);
   }
 }
 
-// usage of above class
-
-// json will come from network data
-final ValidationResult validationResult =  SignInDTO.empty().validate(json);
-if(!validationResult.isValid){
-    throw Error('Validation error ${validationResult.message}')
+// Example usage:
+final json = {'name': 'John Doe', 'signInCode': 12345}; // JSON from a network request
+final ValidationResult validationResult = SignInDTO.empty().validate(json);
+if (!validationResult.isValid) {
+  throw Exception('Validation error ${validationResult.message}');
 }
-SignInDTO signInDTO=SignInDTO.fromJson(json);
+
+SignInDTO signInDTO = SignInDTO.fromJson(json);
+
+```
+
+### Validators
+
+Each of the property validate class like `IsString`, `IsNumber`, `IsBoolean`, `IsList` and `IsEnum` can be used as the following also.
+
+```
+// each of these class has a method 'validate', which will
+// compute validation result based on the options given.
+
+final result=IsString(value: qrCode).validate();
 
 ```
 
 #### IsString
 
-This does the basic check of whether the data is string or not.Most of the options are self-explanatory.
+Ensures the data is a string, with a plethora of checks such as email validation, URL checks, case sensitivity, and more for comprehensive string validation.
 
 ```
 IsString(
@@ -111,7 +114,7 @@ IsString(
 
 #### IsNumber
 
-This does the basic check of whether the data is number or not.
+Ensures numerical data is within a specific range and meets criteria like being positive or divisible by a specific number.
 
 ```
 IsNumber(
@@ -126,37 +129,43 @@ IsNumber(
 )
 ```
 
+```
+IsNumber(
+  value: json['someNumber'],
+  min: 0,
+  max: 100,
+  propertyName: 'someNumber'
+)
+```
+
 #### IsEnum
 
-This does the basic check of whether the data is an enum or not.
+Validates if the provided data matches one of the specified enum values.
 
 ```
-enum ClientDeviceType { android, ios }
+enum UserRole { admin, user, guest }
 
 IsEnum(
-    value,
-    values, // pass enum values, example ClientDeviceType.values
-    isOptional, // will ignore validation if value is null
-    propertyName, // it will contruct a message whenever validation fails, if propertyName is passed
+  value: json['role'],
+  values: UserRole.values,
+  propertyName: 'role'
 )
 ```
 
 #### IsBoolean
 
-This does the basic check of whether the data is an boolean or not.
+Checks if the data is a boolean value.
 
 ```
-
 IsBoolean(
-    value,
-    isOptional, // will ignore validation if value is null
-    propertyName, // it will contruct a message whenever validation fails, if propertyName is passed
+  value: json['isActive'],
+  propertyName: 'isActive'
 )
 ```
 
 #### IsList
 
-This does the basic check of whether the data is a list or not.
+Ensures the provided list data meets size requirements and applies additional validators to each element.
 
 ```
 
@@ -169,7 +178,16 @@ IsList(
     propertyName, // it will contruct a message whenever validation fails, if propertyName is passed
 )
 
-IsList(value: ['test','test2'], nested: (element){
-    return IsString(value:element,maxLen: 4);
-})
+IsList(
+  value: json['tags'],
+  minSize: 1,
+  nested: (element) => IsString(value: element, maxLen: 20),
+  propertyName: 'tags'
+)
 ```
+
+### Leveraging dto_helpers effectively 🚀
+
+The <b>dto_helpers</b> package is designed to simplify data validation across your Dart and Flutter applications, enhancing code quality and data integrity.
+
+Feel free to contribute or raise issues on [Github](https://github.com/rajputs37/dto_helpers).
