@@ -13,7 +13,7 @@ and the Flutter guide for
 
 # dto_helpers
 
-DTO(Data transfer objects) validators package for [Flutter](https://flutter.io).
+DTO(Data transfer objects) validators package for [Dart](https://dart.dev/).
 Supports all platforms.
 
 ## Getting Started
